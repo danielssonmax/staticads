@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 
 // Alternative CORS proxy approach - forwards requests exactly as received
-const API_URL = process.env.STATICFLOW_API_URL || "https://app.staticflow.io/api/templates/search/ads"
+const API_URL = process.env.STATICFLOW_API_URL || "https://app.staticflow.io/api/templates/search"
 const XANO_TOKEN = process.env.XANO_TOKEN || ""
 
 export async function POST(request: NextRequest) {

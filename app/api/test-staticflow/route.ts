@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"
 // Test endpoint to diagnose StaticFlow API issues
 // DELETE THIS FILE AFTER DEBUGGING!
 
-const API_URL = "https://app.staticflow.io/api/templates/search/ads"
+const API_URL = "https://app.staticflow.io/api/templates/search"
 const XANO_TOKEN = process.env.XANO_TOKEN || ""
 
 export async function GET() {

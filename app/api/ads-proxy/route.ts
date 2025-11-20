@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 
-const API_URL = process.env.STATICFLOW_API_URL || "https://app.staticflow.io/api/templates/search/ads"
+const API_URL = process.env.STATICFLOW_API_URL || "https://app.staticflow.io/api/templates/search"
 const XANO_TOKEN = process.env.XANO_TOKEN || ""
 
 export async function POST(request: NextRequest) {
@@ -24,30 +24,21 @@ export async function POST(request: NextRequest) {
     const scope = searchParams.get("scope") || "all"
     const acceptLanguage = request.headers.get("accept-language") || "en-US,en;q=0.9"
 
-    // Build URL with filters as query params (try GET method first)
+    // Build URL with query params
     const externalUrl = new URL(API_URL)
     externalUrl.searchParams.set("pageId", pageId)
     externalUrl.searchParams.set("sort", sort)
     externalUrl.searchParams.set("scope", scope)
-    
-    // Add filters to query params
-    if (body.industryFilters && body.industryFilters.length > 0) {
-      externalUrl.searchParams.set("industry", body.industryFilters.join(','))
-    }
-    if (body.typeFilters && body.typeFilters.length > 0) {
-      externalUrl.searchParams.set("type", body.typeFilters.join(','))
-    }
-    if (body.ratioFilters && body.ratioFilters.length > 0) {
-      externalUrl.searchParams.set("ratio", body.ratioFilters.join(','))
-    }
 
     console.log("📡 Fetching from:", externalUrl.toString())
-    console.log("📦 Using GET method (405 error indicated POST not allowed)")
+    console.log("📦 Using POST method with filters in body")
+    console.log("📦 Request body:", JSON.stringify(body, null, 2))
 
-    // Try GET method first (since POST returned 405)
-    let response = await fetch(externalUrl.toString(), {
-      method: "GET",
+    // Use POST method (confirmed working from network tab)
+    const response = await fetch(externalUrl.toString(), {
+      method: "POST",
       headers: {
+        "Content-Type": "application/json",
         Accept: "*/*",
         "Accept-Language": acceptLanguage,
         "User-Agent":
@@ -55,30 +46,12 @@ export async function POST(request: NextRequest) {
         Cookie: `xano-token=${XANO_TOKEN}`,
         Referer: "https://app.staticflow.io/templates",
         Origin: "https://app.staticflow.io",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Dest": "empty",
       },
+      body: JSON.stringify(body),
     })
-
-    // If GET fails with 405, try POST as fallback
-    if (response.status === 405) {
-      console.log("⚠️ GET returned 405, trying POST method...")
-      response = await fetch(externalUrl.toString(), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "*/*",
-          "Accept-Language": acceptLanguage,
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
-          Cookie: `xano-token=${XANO_TOKEN}`,
-          Referer: "https://app.staticflow.io/templates",
-          Origin: "https://app.staticflow.io",
-          "Sec-Fetch-Site": "same-origin",
-          "Sec-Fetch-Mode": "cors",
-          "Sec-Fetch-Dest": "empty",
-        },
-        body: JSON.stringify(body),
-      })
-    }
 
     console.log("📥 Response status:", response.status, response.statusText)
     console.log("📥 Response headers:", Object.fromEntries(response.headers.entries()))

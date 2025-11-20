@@ -1,7 +1,5 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
   "/api/ads-proxy/route": "app/api/ads-proxy/route.js",
-  "/dashboard/subscription/page": "app/dashboard/subscription/page.js",
-  "/page": "app/page.js",
   "/dashboard/ads-library/page": "app/dashboard/ads-library/page.js"
 }

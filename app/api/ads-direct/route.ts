@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server"
 // Direct approach: Uses external CORS proxy service
 // This bypasses our server entirely and goes directly through a CORS proxy
 
-const STATICFLOW_API_URL = "https://app.staticflow.io/api/templates/search/ads"
+const STATICFLOW_API_URL = "https://app.staticflow.io/api/templates/search"
 const XANO_TOKEN = process.env.XANO_TOKEN || ""
 
 export async function POST(request: NextRequest) {
