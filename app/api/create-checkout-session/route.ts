@@ -1,15 +1,14 @@
 import { NextResponse } from "next/server"
-import Stripe from "stripe"
+import { stripe } from "@/lib/stripe"
 import { getCurrentDomain } from "@/lib/url-utils"
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2023-10-16",
-})
 
 export async function POST(req: Request) {
   try {
     const { priceId } = await req.json()
     const currentDomain = getCurrentDomain(req.headers)
+
+    // Use provided priceId or fall back to default from env
+    const stripePriceId = priceId || process.env.STRIPE_PRICE_ID || 'price_1S6Ww7DPWoWpgTDwWWvly8YM'
 
     const session = await stripe.checkout.sessions.create({
       ui_mode: "embedded",
@@ -18,7 +17,7 @@ export async function POST(req: Request) {
       return_url: `${currentDomain}/return?session_id={CHECKOUT_SESSION_ID}`,
       line_items: [
         {
-          price: 'price_1S6Ww7DPWoWpgTDwWWvly8YM',
+          price: stripePriceId,
           quantity: 1,
         },
       ],

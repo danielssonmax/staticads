@@ -18,18 +18,13 @@ export default function ProtectedAdsLibrary() {
 
   useEffect(() => {
     const checkAccess = async () => {
-      console.log("=== ProtectedAdsLibrary: checkAccess called ===")
-      console.log("Current user:", user)
-      console.log("User email:", user?.email)
-      console.log("User ID:", user?.id)
-
       setIsLoading(true)
 
-      // Debug: Check what's in the profiles table
-      await debugProfilesTable()
+      if (process.env.NODE_ENV === "development") {
+        await debugProfilesTable()
+      }
 
       if (!user) {
-        console.log("No user found, access denied")
         setHasAccess(false)
         setIsLoading(false)
         return
@@ -37,14 +32,12 @@ export default function ProtectedAdsLibrary() {
 
       try {
         const access = await hasAccessToAdsLibrary(user)
-        console.log("Final access check result:", access)
         setHasAccess(access)
       } catch (error) {
         console.error("Error checking access:", error)
         setHasAccess(false)
       } finally {
         setIsLoading(false)
-        console.log("=== ProtectedAdsLibrary: checkAccess completed ===")
       }
     }
 

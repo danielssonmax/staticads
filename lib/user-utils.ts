@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase"
+import { createClient } from "@/lib/supabase/client"
 import type { User } from "@supabase/supabase-js"
 
 export async function getUserPlan(user: User | null): Promise<string> {
@@ -14,6 +14,7 @@ export async function getUserPlan(user: User | null): Promise<string> {
   try {
     console.log("Querying profiles table for email:", user.email)
 
+    const supabase = createClient()
     const { data: profiles, error } = await supabase.from("profiles").select("*").eq("email", user.email).limit(1)
 
     console.log("Supabase query result:")
@@ -48,6 +49,7 @@ export async function updateUserPlan(email: string, plan: string): Promise<boole
   console.log("New plan:", plan)
 
   try {
+    const supabase = createClient()
     const { data, error } = await supabase.from("profiles").upsert({ email, plan }, { onConflict: "email" }).select("*")
 
     console.log("Update result:")
@@ -76,6 +78,7 @@ export async function ensureUserProfile(user: User): Promise<string> {
   console.log("User email:", user.email)
 
   try {
+    const supabase = createClient()
     const { data: existingProfiles, error: fetchError } = await supabase
       .from("profiles")
       .select("*")
@@ -136,6 +139,7 @@ export async function debugProfilesTable(): Promise<void> {
   console.log("=== DEBUG: Checking profiles table ===")
 
   try {
+    const supabase = createClient()
     const { data, error } = await supabase.from("profiles").select("*").limit(10)
 
     console.log("All profiles in table:")

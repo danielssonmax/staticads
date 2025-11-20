@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { createClient } from "@/lib/supabase/server"
 
 export async function POST(req: Request) {
   try {
@@ -9,8 +9,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Email and plan are required" }, { status: 400 })
     }
 
-    console.log(`Updating plan for ${email} to ${plan}`)
-
+    const supabase = await createClient()
     const { data, error } = await supabase.from("profiles").upsert({ email, plan }, { onConflict: "email" }).select()
 
     if (error) {
@@ -18,7 +17,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Failed to update user plan" }, { status: 500 })
     }
 
-    console.log("Successfully updated user plan:", data)
     return NextResponse.json({ success: true, data })
   } catch (error) {
     console.error("Error in update-user-plan API:", error)

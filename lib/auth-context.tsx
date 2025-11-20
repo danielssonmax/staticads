@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { createContext, useContext, useEffect, useState } from "react"
-import { supabase } from "@/lib/supabase"
+import { createClient } from "@/lib/supabase/client"
 import type { User } from "@supabase/supabase-js"
 
 interface AuthContextType {
@@ -20,6 +20,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
+    const supabase = createClient()
+    
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null)
     })
@@ -30,11 +32,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const signIn = async (email: string, password: string) => {
+    const supabase = createClient()
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
   }
 
   const signUp = async (email: string, password: string, name: string) => {
+    const supabase = createClient()
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -48,12 +52,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signOut = async () => {
+    const supabase = createClient()
     const { error } = await supabase.auth.signOut()
     if (error) throw error
   }
 
   const updateUserMembership = async (isPremium: boolean) => {
     if (!user) throw new Error("No user logged in")
+    const supabase = createClient()
     const { error } = await supabase.auth.updateUser({
       data: { is_premium_member: isPremium },
     })

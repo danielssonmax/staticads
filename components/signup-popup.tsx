@@ -8,7 +8,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { supabase } from "@/lib/supabase"
+import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 
 interface SignupPopupProps {
@@ -32,6 +32,7 @@ export function SignupPopup({ isOpen, onClose, onSignupSuccess }: SignupPopupPro
     setIsLoading(true)
 
     try {
+      const supabase = createClient()
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -61,6 +62,7 @@ export function SignupPopup({ isOpen, onClose, onSignupSuccess }: SignupPopupPro
     setIsLoading(true)
 
     try {
+      const supabase = createClient()
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -81,6 +83,7 @@ export function SignupPopup({ isOpen, onClose, onSignupSuccess }: SignupPopupPro
 
   const handleGoogleSignIn = async () => {
     try {
+      const supabase = createClient()
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {

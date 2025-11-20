@@ -4,7 +4,7 @@ export default function FeaturesSection() {
       <div className="max-w-7xl mx-auto px-4">
         {/* First Features Block */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight max-w-4xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight max-w-4xl mx-auto text-black">
             The{" "}
             <span className="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">modern</span>{" "}
             <span className="text-orange-500">way</span> to make static ads that win, from the world's largest library
@@ -17,7 +17,7 @@ export default function FeaturesSection() {
 
         <div className="grid md:grid-cols-2 gap-8 mb-16">
           <div className="rounded-2xl border bg-white p-8">
-            <h3 className="text-2xl font-bold mb-4">Over 1900+ Unique Templates</h3>
+            <h3 className="text-2xl font-bold mb-4 text-black">Over 1900+ Unique Templates</h3>
             <p className="text-gray-600 mb-6">
               Select from over 1900+ templates in our extensive library, you can find any creative, for any test, at
               anytime.
@@ -41,7 +41,7 @@ export default function FeaturesSection() {
             </div>
           </div>
           <div className="rounded-2xl border bg-white p-8">
-            <h3 className="text-2xl font-bold mb-4">50 New Templates Every Week</h3>
+            <h3 className="text-2xl font-bold mb-4 text-black">50 New Templates Every Week</h3>
             <p className="text-gray-600 mb-6">
               Our team is constantly researching what's working across the top brands around the world, adding a minimum
               of 50 new ad templates per week to the Staticflow ad library.
@@ -57,7 +57,7 @@ export default function FeaturesSection() {
         {/* Performance Criteria Section */}
         <div className="mb-16">
           <h3 className="text-2xl text-purple-600 font-semibold mb-4">What sets our templates apart?</h3>
-          <h2 className="text-4xl font-bold mb-6">
+          <h2 className="text-4xl font-bold mb-6 text-black">
             Each template meets our{" "}
             <span className="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
               performance
@@ -73,28 +73,28 @@ export default function FeaturesSection() {
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl">🌟</span>
               </div>
-              <h4 className="text-xl font-semibold mb-2">Has been running for over 30+ days</h4>
+              <h4 className="text-xl font-semibold mb-2 text-black">Has been running for over 30+ days</h4>
               <p className="text-gray-600">Longer duration is a sign it's producing strong metrics.</p>
             </div>
             <div className="rounded-xl border bg-white p-6">
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl">🚀</span>
               </div>
-              <h4 className="text-xl font-semibold mb-2">Fast growing $1M+ brands</h4>
+              <h4 className="text-xl font-semibold mb-2 text-black">Fast growing $1M+ brands</h4>
               <p className="text-gray-600">We consider only the best brands from around the world.</p>
             </div>
             <div className="rounded-xl border bg-white p-6">
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl">💡</span>
               </div>
-              <h4 className="text-xl font-semibold mb-2">Unique concepts or visuals</h4>
+              <h4 className="text-xl font-semibold mb-2 text-black">Unique concepts or visuals</h4>
               <p className="text-gray-600">Fresh creatives with unique concepts that grab attention and stand out.</p>
             </div>
             <div className="rounded-xl border bg-white p-6">
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl">✍️</span>
               </div>
-              <h4 className="text-xl font-semibold mb-2">Strong hook or copy</h4>
+              <h4 className="text-xl font-semibold mb-2 text-black">Strong hook or copy</h4>
               <p className="text-gray-600">Effective hooks and copy are crucial for grabbing attention.</p>
             </div>
           </div>

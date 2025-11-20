@@ -17,7 +17,7 @@ export default function HomeClient() {
   const { user, signOut } = useAuth()
 
   return (
-    <div className="bg-gradient-to-br from-white via-purple-50/30 to-pink-50/30">
+    <div className="bg-white text-black">
       <header className="flex items-center justify-between px-4 py-4 max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
           <Image
@@ -63,7 +63,7 @@ export default function HomeClient() {
       <main>
         <div className="px-4 max-w-7xl mx-auto">
           <div className="text-center py-16 md:py-24 space-y-6">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight max-w-4xl mx-auto text-black">
               Rapidly create{" "}
               <span className="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
                 high-converting

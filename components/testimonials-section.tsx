@@ -50,7 +50,7 @@ export default function TestimonialsSection() {
     <section className="py-16 md:py-24 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4">
+          <h2 className="text-4xl font-bold mb-4 text-black">
             Not convinced? Here's what our{" "}
             <span className="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
               customers
@@ -78,7 +78,7 @@ export default function TestimonialsSection() {
                   className="w-12 h-12 rounded-full"
                 />
                 <div>
-                  <div className="font-semibold">{testimonial.name}</div>
+                  <div className="font-semibold text-black">{testimonial.name}</div>
                 </div>
               </div>
             </div>
