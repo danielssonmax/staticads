@@ -352,12 +352,12 @@ export default function AdLibrary() {
                         </div>
                       )}
                       <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-opacity duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                        <Button variant="secondary" size="sm" className="mr-2" onClick={() => handleOpenInCanva(ad)}>
+                        <Button variant="outline" size="sm" className="mr-2" onClick={() => handleOpenInCanva(ad)}>
                           <ExternalLink className="w-4 h-4 mr-2" />
                           Open in Canva
                         </Button>
                         <Button
-                          variant="secondary"
+                          variant="outline"
                           size="sm"
                           onClick={() =>
                             handleAdAction(() => {

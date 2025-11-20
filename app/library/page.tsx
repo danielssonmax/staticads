@@ -16,7 +16,7 @@ export default function LibraryPage() {
           />
         </div>
         <div className="flex items-center gap-4">
-          <Button variant="ghost">Login</Button>
+          <Button variant="outline">Login</Button>
           <Button className="bg-[#7C3AED] hover:bg-[#6D28D9]">Try for free</Button>
         </div>
       </header>

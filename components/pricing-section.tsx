@@ -155,7 +155,7 @@ export default function PricingSection() {
       </div>
 
       <StripeCheckoutDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} />
-      <SignupPopup isOpen={isSignupOpen} onClose={() => setIsSignupOpen(false)} />
+      <SignupPopup isOpen={isSignupOpen} onClose={() => setIsSignupOpen(false)} onSignupSuccess={() => setIsSignupOpen(false)} />
     </div>
   )
 }

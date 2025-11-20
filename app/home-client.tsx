@@ -32,7 +32,7 @@ export default function HomeClient() {
           {user ? (
             // Logged in user buttons
             <>
-              <Button variant="ghost" asChild>
+              <Button variant="outline" asChild>
                 <Link href="/dashboard/ads-library">Dashboard</Link>
               </Button>
               <Button
@@ -51,7 +51,7 @@ export default function HomeClient() {
           ) : (
             // Logged out user buttons
             <>
-              <Button variant="ghost">Login</Button>
+              <Button variant="outline">Login</Button>
               <Button className="bg-[#7C3AED] hover:bg-[#6D28D9]" onClick={() => setIsSignupOpen(true)}>
                 Try for free
               </Button>
@@ -108,7 +108,7 @@ export default function HomeClient() {
         </div>
       </main>
 
-      <SignupPopup isOpen={isSignupOpen} onClose={() => setIsSignupOpen(false)} />
+      <SignupPopup isOpen={isSignupOpen} onClose={() => setIsSignupOpen(false)} onSignupSuccess={() => setIsSignupOpen(false)} />
     </div>
   )
 }

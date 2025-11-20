@@ -2,16 +2,19 @@
 
 import type React from "react"
 import { useRouter } from "next/navigation"
+import { Slot } from "@radix-ui/react-slot"
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "default" | "outline"
   size?: "default" | "sm" | "lg"
   className?: string
   onClick?: () => void
+  asChild?: boolean
 }
 
-export const Button = ({ variant = "default", size = "md", children, className, ...props }: ButtonProps) => {
+export const Button = ({ variant = "default", size = "default", children, className, asChild = false, ...props }: ButtonProps) => {
   const router = useRouter()
+  const Comp = asChild ? Slot : "button"
 
   const sizeClass = size === "sm" ? "px-3 py-1.5 text-sm" : size === "lg" ? "px-6 py-3 text-lg" : "px-4 py-2 text-base"
 
@@ -20,18 +23,20 @@ export const Button = ({ variant = "default", size = "md", children, className, 
       ? "bg-white text-[#7C3AED] border border-[#7C3AED] hover:bg-[#7C3AED] hover:text-white"
       : "bg-[#7C3AED] text-white hover:bg-[#6D28D9]"
 
-  const handleClick = () => {
-    if (props.onClick) {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!asChild && props.onClick) {
       props.onClick()
-      // Assuming successful account creation, navigate to the dashboard
-      router.push("/dashboard/ads-library")
+      // Only navigate if not using asChild (Link handles its own navigation)
+      if (!props.onClick.toString().includes('setIsDialogOpen') && !props.onClick.toString().includes('setIsSignupOpen')) {
+        router.push("/dashboard/ads-library")
+      }
     }
   }
 
   return (
-    <button className={`${sizeClass} rounded-md ${variantClass} ${className}`} onClick={handleClick} {...props}>
+    <Comp className={`${sizeClass} rounded-md ${variantClass} ${className}`} onClick={!asChild ? handleClick : undefined} {...props}>
       {children}
-    </button>
+    </Comp>
   )
 }
 

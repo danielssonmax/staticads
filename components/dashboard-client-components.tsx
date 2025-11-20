@@ -114,7 +114,7 @@ export const ClientHeader = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   return (
     <div className="h-14 border-b flex items-center justify-between px-4 lg:px-6">
-      <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsSidebarOpen(true)}>
+      <Button variant="outline" size="sm" className="lg:hidden p-2" onClick={() => setIsSidebarOpen(true)}>
         <Menu className="w-5 h-5" />
       </Button>
     </div>

@@ -4,5 +4,17 @@
     "files": [
       "static/chunks/_app-pages-browser_node_modules_pnpm_next_15_1_0_react-dom_18_3_1_react_18_3_1__react_18_3_1_-ac2729.js"
     ]
+  },
+  "node_modules\\.pnpm\\next@15.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1\\node_modules\\next\\dist\\client\\index.js -> ../pages/_app": {
+    "id": "node_modules\\.pnpm\\next@15.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1\\node_modules\\next\\dist\\client\\index.js -> ../pages/_app",
+    "files": [
+      "static/chunks/node_modules_pnpm_next_15_1_0_react-dom_18_3_1_react_18_3_1__react_18_3_1_node_modules_next_d-0dc397.js"
+    ]
+  },
+  "node_modules\\.pnpm\\next@15.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1\\node_modules\\next\\dist\\client\\index.js -> ../pages/_error": {
+    "id": "node_modules\\.pnpm\\next@15.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1\\node_modules\\next\\dist\\client\\index.js -> ../pages/_error",
+    "files": [
+      "static/chunks/node_modules_pnpm_next_15_1_0_react-dom_18_3_1_react_18_3_1__react_18_3_1_node_modules_next_d-286257.js"
+    ]
   }
 }

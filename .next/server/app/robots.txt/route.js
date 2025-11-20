@@ -1,0 +1,9 @@
+"use strict";(()=>{var e={};e.id=784,e.ids=[784],e.modules={846:e=>{e.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},4870:e=>{e.exports=require("next/dist/compiled/next-server/app-route.runtime.prod.js")},3295:e=>{e.exports=require("next/dist/server/app-render/after-task-async-storage.external.js")},9294:e=>{e.exports=require("next/dist/server/app-render/work-async-storage.external.js")},3033:e=>{e.exports=require("next/dist/server/app-render/work-unit-async-storage.external.js")},3892:(e,t,r)=>{r.r(t),r.d(t,{patchFetch:()=>w,routeModule:()=>l,serverHooks:()=>m,workAsyncStorage:()=>x,workUnitAsyncStorage:()=>c});var o={};r.r(o),r.d(o,{GET:()=>u});var s=r(7993),a=r(4566),n=r(2525),i=r(8520),p=r(326),d=r(9573);async function u(){let e=await (0,d.b3)(),t=(0,p.C4)(e),r=`# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+
+# Sitemap for current domain
+Sitemap: ${t}/sitemap.xml
+`;return new i.NextResponse(r,{headers:{"Content-Type":"text/plain"}})}let l=new s.AppRouteRouteModule({definition:{kind:a.RouteKind.APP_ROUTE,page:"/robots.txt/route",pathname:"/robots.txt",filename:"route",bundlePath:"app/robots.txt/route"},resolvedPagePath:"C:\\Users\\danie\\Downloads\\staticads repo\\staticads\\app\\robots.txt\\route.ts",nextConfigOutput:"",userland:o}),{workAsyncStorage:x,workUnitAsyncStorage:c,serverHooks:m}=l;function w(){return(0,n.patchFetch)({workAsyncStorage:x,workUnitAsyncStorage:c})}},326:(e,t,r)=>{r.d(t,{C4:()=>s,KQ:()=>a});let o={defaultDomain:"https://staticadtemplates.com"};function s(e){if(e){let t=e.get("host"),r=e.get("x-forwarded-proto")||"https";if(t)return`${r}://${t}`}return o.defaultDomain}function a(e,t){let r=t||o.defaultDomain,s=e.startsWith("/")?e.slice(1):e;return""===s?r:`${r}/${s}`}}};var t=require("../../webpack-runtime.js");t.C(e);var r=e=>t(t.s=e),o=t.X(0,[353,218,573],()=>r(3892));module.exports=o})();

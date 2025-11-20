@@ -108,7 +108,7 @@ export function SignupPopup({ isOpen, onClose, onSignupSuccess }: SignupPopupPro
               height={40}
               className="mx-auto mb-6"
             />
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "register" | "login")} className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="register">Register</TabsTrigger>
                 <TabsTrigger value="login">Login</TabsTrigger>

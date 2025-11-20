@@ -26,7 +26,7 @@ export default function StaticAdTemplatesClient() {
         <div className="flex items-center gap-4">
           {user ? (
             <>
-              <Button variant="ghost" asChild>
+              <Button variant="outline" asChild>
                 <Link href="/dashboard/ads-library">Dashboard</Link>
               </Button>
               <Button
@@ -44,7 +44,7 @@ export default function StaticAdTemplatesClient() {
             </>
           ) : (
             <>
-              <Button variant="ghost" asChild>
+              <Button variant="outline" asChild>
                 <Link href="/login">Login</Link>
               </Button>
               <Button className="bg-[#7C3AED] hover:bg-[#6D28D9]" asChild>

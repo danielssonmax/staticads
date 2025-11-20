@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { getCurrentDomain } from "@/lib/url-utils"
 import { headers } from "next/headers"
 
-export async function GET(): NextResponse {
+export async function GET(): Promise<NextResponse> {
   const headersList = await headers()
   const currentDomain = getCurrentDomain(headersList)
 
