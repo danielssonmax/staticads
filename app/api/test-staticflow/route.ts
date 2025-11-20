@@ -65,8 +65,9 @@ export async function GET() {
         Origin: "https://app.staticflow.io",
       },
       body: JSON.stringify({
-        industryFilters: [],
-        typeFilters: [],
+        activeLibrary: "ads",
+        industryIdFilters: [],
+        typeIdFilters: [],
         ratioFilters: []
       }),
     })

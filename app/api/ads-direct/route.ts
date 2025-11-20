@@ -18,6 +18,14 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { searchParams } = new URL(request.url)
 
+    // Transform to StaticFlow's expected format
+    const requestBody = {
+      activeLibrary: "ads",
+      industryIdFilters: body.industryFilters || body.industryIdFilters || [],
+      typeIdFilters: body.typeFilters || body.typeIdFilters || [],
+      ratioFilters: body.ratioFilters || [],
+    }
+
     // Build the target URL
     const targetUrl = `${STATICFLOW_API_URL}?${searchParams.toString()}`
 
@@ -32,7 +40,7 @@ export async function POST(request: NextRequest) {
           "Accept": "*/*",
           "Cookie": `xano-token=${XANO_TOKEN}`,
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify(requestBody),
       })
 
       if (response.ok) {
@@ -57,7 +65,7 @@ export async function POST(request: NextRequest) {
         "Accept": "*/*",
         "Cookie": `xano-token=${XANO_TOKEN}`,
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(requestBody),
     })
 
     if (!corsResponse.ok) {

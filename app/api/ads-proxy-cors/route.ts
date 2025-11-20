@@ -25,6 +25,14 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    // Transform to StaticFlow's expected format
+    const requestBody = {
+      activeLibrary: "ads",
+      industryIdFilters: body.industryFilters || body.industryIdFilters || [],
+      typeIdFilters: body.typeFilters || body.typeIdFilters || [],
+      ratioFilters: body.ratioFilters || [],
+    }
+
     console.log("🔀 CORS Proxy forwarding to:", targetUrl.toString())
 
     // Forward the request with minimal modifications
@@ -38,7 +46,7 @@ export async function POST(request: NextRequest) {
         "Referer": "https://app.staticflow.io/",
         "Origin": "https://app.staticflow.io",
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(requestBody),
     })
 
     console.log("📥 CORS Proxy response:", response.status, response.statusText)

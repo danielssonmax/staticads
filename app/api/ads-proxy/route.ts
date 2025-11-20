@@ -30,9 +30,17 @@ export async function POST(request: NextRequest) {
     externalUrl.searchParams.set("sort", sort)
     externalUrl.searchParams.set("scope", scope)
 
+    // Transform the request body to match StaticFlow's expected format
+    const requestBody = {
+      activeLibrary: "ads",
+      industryIdFilters: body.industryFilters || body.industryIdFilters || [],
+      typeIdFilters: body.typeFilters || body.typeIdFilters || [],
+      ratioFilters: body.ratioFilters || [],
+    }
+
     console.log("📡 Fetching from:", externalUrl.toString())
     console.log("📦 Using POST method with filters in body")
-    console.log("📦 Request body:", JSON.stringify(body, null, 2))
+    console.log("📦 Request body:", JSON.stringify(requestBody, null, 2))
 
     // Use POST method (confirmed working from network tab)
     const response = await fetch(externalUrl.toString(), {
@@ -50,7 +58,7 @@ export async function POST(request: NextRequest) {
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Dest": "empty",
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(requestBody),
     })
 
     console.log("📥 Response status:", response.status, response.statusText)
