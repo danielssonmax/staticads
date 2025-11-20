@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
 
-const API_URL = process.env.CANVA_LINK_API_URL || "https://app.staticflow.io/api/templates/canva-link"
+// StaticFlow uses Next.js Server Actions for Canva link retrieval
+// The endpoint is /templates (not /api/templates/canva-link)
+const API_URL = "https://app.staticflow.io/templates"
 const XANO_TOKEN = process.env.XANO_TOKEN || ""
 
 export async function GET(request: NextRequest) {
@@ -22,53 +24,88 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Ad ID is required" }, { status: 400 })
     }
 
-    const externalUrl = new URL(API_URL)
-    externalUrl.searchParams.set("id", adId)
-    externalUrl.searchParams.set("library", "ads")
-
     console.log("🔗 Fetching Canva link for ad:", adId)
-    console.log("📡 URL:", externalUrl.toString())
+    console.log("📡 Using Server Action format")
 
-    const response = await fetch(externalUrl.toString(), {
-      method: "GET",
+    // StaticFlow uses Server Actions with this specific payload format
+    // Payload: ["ads", "template-id"]
+    const requestBody = JSON.stringify(["ads", adId])
+
+    console.log("📦 Request body:", requestBody)
+
+    const response = await fetch(API_URL, {
+      method: "POST",
       headers: {
-        Accept: "*/*",
+        "Content-Type": "text/plain;charset=UTF-8",
+        "Accept": "text/x-component",
+        "Accept-Language": "en-US,en;q=0.9",
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
-        Cookie: `xano-token=${XANO_TOKEN}`,
-        Referer: "https://app.staticflow.io/",
-        Origin: "https://app.staticflow.io",
+        "Cookie": `xano-token=${XANO_TOKEN}`,
+        "Referer": "https://app.staticflow.io/templates",
+        "Origin": "https://app.staticflow.io",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Dest": "empty",
       },
+      body: requestBody,
     })
 
     console.log("📥 Canva link response:", response.status, response.statusText)
+    console.log("📥 Content-Type:", response.headers.get("content-type"))
 
     if (!response.ok) {
-      let errorBody: any = null
-      try {
-        errorBody = await response.json()
-      } catch {
-        const text = await response.text()
-        errorBody = { raw: text }
-      }
-      console.error("❌ Canva link API error:", response.status, errorBody)
+      const errorText = await response.text()
+      console.error("❌ Canva link API error:", response.status, errorText.substring(0, 200))
       
-      const status = response.status === 400 ? 400 : 502
       return NextResponse.json({ 
         error: "External API error", 
         status: response.status, 
-        details: errorBody,
-        url: externalUrl.toString()
-      }, { status })
+        details: errorText.substring(0, 500),
+      }, { status: response.status })
     }
 
-    const data = await response.json()
+    // Response is in Server Action format (React Server Component)
+    const responseText = await response.text()
+    
+    console.log("📥 Response preview:", responseText.substring(0, 200))
 
-    const canvaLink: string | undefined =
-      data?.data?.canvaLink || data?.data?.canva_link || data?.canvaLink || data?.canva_link
+    // Try to parse the response
+    // Server Actions return a special format, we need to extract the Canva link
+    let canvaLink: string | null = null
+
+    try {
+      // The response might be JSON or RSC format
+      // Look for Canva link patterns in the response
+      const canvaLinkMatch = responseText.match(/https:\/\/www\.canva\.com\/design\/[^"'\s]+/)
+      if (canvaLinkMatch) {
+        canvaLink = canvaLinkMatch[0]
+        console.log("✅ Found Canva link:", canvaLink)
+      } else {
+        // Try parsing as JSON
+        const jsonData = JSON.parse(responseText)
+        canvaLink = 
+          jsonData?.canvaLink || 
+          jsonData?.canva_link || 
+          jsonData?.data?.canvaLink || 
+          jsonData?.data?.canva_link ||
+          null
+      }
+    } catch (parseError) {
+      console.error("⚠️ Could not parse response, searching for Canva URL pattern")
+      // Last resort: regex search for Canva URL
+      const canvaLinkMatch = responseText.match(/https:\/\/www\.canva\.com\/design\/[^"'\s]+/)
+      if (canvaLinkMatch) {
+        canvaLink = canvaLinkMatch[0]
+      }
+    }
 
     if (!canvaLink) {
-      return NextResponse.json({ error: "Canva link not found" }, { status: 404 })
+      console.error("❌ Canva link not found in response")
+      return NextResponse.json({ 
+        error: "Canva link not found in response",
+        responsePreview: responseText.substring(0, 500)
+      }, { status: 404 })
     }
 
     return NextResponse.json(
@@ -82,12 +119,16 @@ export async function GET(request: NextRequest) {
       },
     )
   } catch (error: any) {
-    return NextResponse.json({ error: "Internal proxy error", details: error.message }, { status: 500 })
+    console.error("❌ Internal error:", error)
+    return NextResponse.json({ 
+      error: "Internal proxy error", 
+      details: error.message 
+    }, { status: 500 })
   }
 }
 
 export async function POST() {
-  return NextResponse.json({ error: "Use GET for /api/canva-link" }, { status: 405 })
+  return NextResponse.json({ error: "Use GET for /api/canva-link?id=TEMPLATE_ID" }, { status: 405 })
 }
 
 export async function OPTIONS() {
