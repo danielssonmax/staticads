@@ -3,12 +3,17 @@ import { type NextRequest, NextResponse } from "next/server"
 const API_URL = process.env.CANVA_LINK_API_URL || "https://app.staticflow.io/api/templates/canva-link"
 const XANO_TOKEN = process.env.XANO_TOKEN || ""
 
-if (!XANO_TOKEN) {
-  console.warn("XANO_TOKEN is not set in environment variables")
-}
-
 export async function GET(request: NextRequest) {
   try {
+    // Verify XANO_TOKEN is available
+    if (!XANO_TOKEN) {
+      console.error("❌ XANO_TOKEN is not set in environment variables")
+      return NextResponse.json(
+        { error: "Server configuration error: XANO_TOKEN not set" },
+        { status: 500 }
+      )
+    }
+
     const { searchParams } = new URL(request.url)
     const rawId = searchParams.get("id") || ""
     const adId = rawId.replace(/^"+|"+$/g, "").trim()
@@ -20,6 +25,9 @@ export async function GET(request: NextRequest) {
     const externalUrl = new URL(API_URL)
     externalUrl.searchParams.set("id", adId)
     externalUrl.searchParams.set("library", "ads")
+
+    console.log("🔗 Fetching Canva link for ad:", adId)
+    console.log("📡 URL:", externalUrl.toString())
 
     const response = await fetch(externalUrl.toString(), {
       method: "GET",
@@ -33,6 +41,8 @@ export async function GET(request: NextRequest) {
       },
     })
 
+    console.log("📥 Canva link response:", response.status, response.statusText)
+
     if (!response.ok) {
       let errorBody: any = null
       try {
@@ -41,8 +51,15 @@ export async function GET(request: NextRequest) {
         const text = await response.text()
         errorBody = { raw: text }
       }
+      console.error("❌ Canva link API error:", response.status, errorBody)
+      
       const status = response.status === 400 ? 400 : 502
-      return NextResponse.json({ error: "External API error", status: response.status, details: errorBody }, { status })
+      return NextResponse.json({ 
+        error: "External API error", 
+        status: response.status, 
+        details: errorBody,
+        url: externalUrl.toString()
+      }, { status })
     }
 
     const data = await response.json()

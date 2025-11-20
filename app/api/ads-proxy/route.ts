@@ -3,12 +3,19 @@ import { type NextRequest, NextResponse } from "next/server"
 const API_URL = process.env.STATICFLOW_API_URL || "https://app.staticflow.io/api/templates/search/ads"
 const XANO_TOKEN = process.env.XANO_TOKEN || ""
 
-if (!XANO_TOKEN) {
-  console.warn("XANO_TOKEN is not set in environment variables")
-}
-
 export async function POST(request: NextRequest) {
   try {
+    // Verify XANO_TOKEN is available
+    if (!XANO_TOKEN) {
+      console.error("❌ XANO_TOKEN is not set in environment variables")
+      return NextResponse.json(
+        { error: "Server configuration error: XANO_TOKEN not set" },
+        { status: 500 }
+      )
+    }
+
+    console.log("✅ XANO_TOKEN is set:", XANO_TOKEN.substring(0, 20) + "..." + XANO_TOKEN.slice(-10))
+
     const body = await request.json()
 
     const { searchParams } = new URL(request.url)
@@ -17,15 +24,30 @@ export async function POST(request: NextRequest) {
     const scope = searchParams.get("scope") || "all"
     const acceptLanguage = request.headers.get("accept-language") || "en-US,en;q=0.9"
 
+    // Build URL with filters as query params (try GET method first)
     const externalUrl = new URL(API_URL)
     externalUrl.searchParams.set("pageId", pageId)
     externalUrl.searchParams.set("sort", sort)
     externalUrl.searchParams.set("scope", scope)
+    
+    // Add filters to query params
+    if (body.industryFilters && body.industryFilters.length > 0) {
+      externalUrl.searchParams.set("industry", body.industryFilters.join(','))
+    }
+    if (body.typeFilters && body.typeFilters.length > 0) {
+      externalUrl.searchParams.set("type", body.typeFilters.join(','))
+    }
+    if (body.ratioFilters && body.ratioFilters.length > 0) {
+      externalUrl.searchParams.set("ratio", body.ratioFilters.join(','))
+    }
 
-    const response = await fetch(externalUrl.toString(), {
-      method: "POST",
+    console.log("📡 Fetching from:", externalUrl.toString())
+    console.log("📦 Using GET method (405 error indicated POST not allowed)")
+
+    // Try GET method first (since POST returned 405)
+    let response = await fetch(externalUrl.toString(), {
+      method: "GET",
       headers: {
-        "Content-Type": "application/json",
         Accept: "*/*",
         "Accept-Language": acceptLanguage,
         "User-Agent":
@@ -33,22 +55,51 @@ export async function POST(request: NextRequest) {
         Cookie: `xano-token=${XANO_TOKEN}`,
         Referer: "https://app.staticflow.io/templates",
         Origin: "https://app.staticflow.io",
-        "Sec-Fetch-Site": "same-origin",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Dest": "empty",
       },
-      body: JSON.stringify(body),
     })
+
+    // If GET fails with 405, try POST as fallback
+    if (response.status === 405) {
+      console.log("⚠️ GET returned 405, trying POST method...")
+      response = await fetch(externalUrl.toString(), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "*/*",
+          "Accept-Language": acceptLanguage,
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+          Cookie: `xano-token=${XANO_TOKEN}`,
+          Referer: "https://app.staticflow.io/templates",
+          Origin: "https://app.staticflow.io",
+          "Sec-Fetch-Site": "same-origin",
+          "Sec-Fetch-Mode": "cors",
+          "Sec-Fetch-Dest": "empty",
+        },
+        body: JSON.stringify(body),
+      })
+    }
+
+    console.log("📥 Response status:", response.status, response.statusText)
+    console.log("📥 Response headers:", Object.fromEntries(response.headers.entries()))
 
     if (!response.ok) {
       const errorText = await response.text()
+      console.error("❌ External API error:", response.status, errorText)
+      
       return NextResponse.json(
-        { error: `External API error: ${response.status} - ${errorText}` },
+        { 
+          error: `External API error: ${response.status} - ${response.statusText}`,
+          details: errorText,
+          url: externalUrl.toString(),
+          method: "POST"
+        },
         { status: response.status },
       )
     }
 
     const data = await response.json()
+    console.log("✅ Successfully fetched ads data")
 
     return NextResponse.json(data, {
       headers: {

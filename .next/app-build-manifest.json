@@ -15,6 +15,31 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/api/create-checkout-session/route.js"
+    ],
+    "/dashboard/ads-library/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/dashboard/ads-library/page.js"
+    ],
+    "/dashboard/subscription/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/dashboard/subscription/page.js"
+    ],
+    "/api/ads-proxy/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/ads-proxy/route.js"
+    ],
+    "/api/verify-env/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/verify-env/route.js"
+    ],
+    "/api/test-staticflow/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/test-staticflow/route.js"
     ]
   }
 }
