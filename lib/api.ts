@@ -1,6 +1,43 @@
 import type { QueryParams, ApiResponse, AdTemplate } from "@/types/api"
 
 /**
+ * Map category names to StaticFlow category IDs
+ */
+const CATEGORY_NAME_TO_ID: Record<string, string> = {
+  "Fashion & Accessories": "1",
+  "Food": "2",
+  "Health & Wellness": "3",
+  "Electronics": "4",
+  "Pets": "5",
+  "Home & Furniture": "6",
+  "Skincare": "7",
+  "SaaS/Apps": "8",
+  "Self care": "9",
+  "Sport & outdoor": "10",
+  "Finance": "11",
+  "Education": "12",
+  "Kids & Baby": "13",
+}
+
+/**
+ * Convert category names to IDs
+ * If a value is already an ID (number string), return it as-is
+ * If it's a category name, convert it to the corresponding ID
+ */
+function convertCategoriesToIds(categories: string[]): string[] {
+  return categories
+    .map(category => {
+      // If it's already a number, return as-is
+      if (/^\d+$/.test(category)) {
+        return category
+      }
+      // Otherwise, look up the ID from the name
+      return CATEGORY_NAME_TO_ID[category] || category
+    })
+    .filter(id => id) // Remove any undefined/null values
+}
+
+/**
  * Fetch ads via the local proxy to the StaticFlow API.
  * Keeps the flexible response parsing to handle multiple shapes.
  */
@@ -15,15 +52,21 @@ export async function queryAds(params: QueryParams): Promise<ApiResponse> {
     url.searchParams.set("sort", sortValue)
     url.searchParams.set("scope", "all")
 
+    // Convert category names to IDs
+    const industryIds = convertCategoriesToIds(params.industry)
+    const typeIds = convertCategoriesToIds(params.type)
+
     // Request body as per the expected proxy format
     const requestBody = {
-      industryFilters: params.industry,
-      typeFilters: params.type,
+      industryFilters: industryIds,
+      typeFilters: typeIds,
       ratioFilters: params.ratio,
     }
 
     // Log the final URL and request body
     console.log("[queryAds] POST", url.toString(), "body:", requestBody)
+    console.log("[queryAds] Converted industries:", params.industry, "→", industryIds)
+    console.log("[queryAds] Converted types:", params.type, "→", typeIds)
 
     const response = await fetch(url.toString(), {
       method: "POST",

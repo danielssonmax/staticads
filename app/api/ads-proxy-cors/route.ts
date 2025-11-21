@@ -4,6 +4,39 @@ import { type NextRequest, NextResponse } from "next/server"
 const API_URL = process.env.STATICFLOW_API_URL || "https://app.staticflow.io/api/templates/search"
 const XANO_TOKEN = process.env.XANO_TOKEN || ""
 
+/**
+ * Map category names to StaticFlow category IDs
+ */
+const CATEGORY_NAME_TO_ID: Record<string, string> = {
+  "Fashion & Accessories": "1",
+  "Food": "2",
+  "Health & Wellness": "3",
+  "Electronics": "4",
+  "Pets": "5",
+  "Home & Furniture": "6",
+  "Skincare": "7",
+  "SaaS/Apps": "8",
+  "Self care": "9",
+  "Sport & outdoor": "10",
+  "Finance": "11",
+  "Education": "12",
+  "Kids & Baby": "13",
+}
+
+/**
+ * Convert category names to IDs
+ */
+function convertCategoriesToIds(categories: string[]): string[] {
+  if (!Array.isArray(categories)) return []
+  
+  return categories
+    .map(category => {
+      if (/^\d+$/.test(category)) return category
+      return CATEGORY_NAME_TO_ID[category] || category
+    })
+    .filter(id => id)
+}
+
 export async function POST(request: NextRequest) {
   try {
     if (!XANO_TOKEN) {
@@ -25,11 +58,15 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    // Get the filters and convert any category names to IDs
+    const industryFilters = body.industryFilters || body.industryIdFilters || []
+    const typeFilters = body.typeFilters || body.typeIdFilters || []
+    
     // Transform to StaticFlow's expected format
     const requestBody = {
       activeLibrary: "ads",
-      industryIdFilters: body.industryFilters || body.industryIdFilters || [],
-      typeIdFilters: body.typeFilters || body.typeIdFilters || [],
+      industryIdFilters: convertCategoriesToIds(industryFilters),
+      typeIdFilters: convertCategoriesToIds(typeFilters),
       ratioFilters: body.ratioFilters || [],
     }
 
