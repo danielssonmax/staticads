@@ -51,14 +51,15 @@ export async function queryAdsFromSupabase(params: QueryParams): Promise<ApiResp
     const totalCount =
       actualData.total || actualData.totalCount || actualData.total_count || actualData.count || ads.length
     const currentPage = actualData.page || actualData.currentPage || actualData.current_page || params.page_id
+    const totalPages = Math.ceil(totalCount / 20)
 
     console.log(`[queryAdsFromSupabase] Received ${ads.length} ads (total: ${totalCount})`)
 
     return {
       ads,
-      totalCount,
-      currentPage,
-      hasMore: currentPage * 20 < totalCount, // Assuming 20 items per page
+      total_count: totalCount,
+      current_page: currentPage,
+      total_pages: totalPages,
     }
   } catch (error: any) {
     console.error("[queryAdsFromSupabase] Error:", error)
@@ -80,7 +81,7 @@ export async function getCanvaLinkFromCache(ad: AdTemplate): Promise<string> {
   // Fallback to API call
   console.log("[getCanvaLinkFromCache] No cached URL, falling back to API")
   const url = new URL("/api/canva-link", window.location.origin)
-  url.searchParams.set("id", ad.id)
+  url.searchParams.set("id", String(ad.id))
 
   const response = await fetch(url.toString(), { method: "GET" })
 
