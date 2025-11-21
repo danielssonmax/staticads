@@ -194,12 +194,13 @@ export async function GET(request: NextRequest) {
 
         for (let i = 0; i < ads.length; i++) {
           const ad = ads[i]
-          console.log(`  🔗 Fetching Canva URL for ad ${i + 1}/${ads.length} (ID: ${ad.id})...`)
+          const adId = String(ad.id)
+          console.log(`  🔗 Fetching Canva URL for ad ${i + 1}/${ads.length} (ID: ${adId})...`)
 
           try {
-            const canvaUrl = await fetchCanvaUrl(ad.id)
+            const canvaUrl = await fetchCanvaUrl(adId)
             if (canvaUrl) {
-              canvaUrls.set(ad.id, canvaUrl)
+              canvaUrls.set(adId, canvaUrl)
               console.log(`  ✅ Got Canva URL`)
             } else {
               console.log(`  ⚠️ No Canva URL found`)
@@ -209,7 +210,7 @@ export async function GET(request: NextRequest) {
             errorsCount++
             errorDetails.push({
               type: "canva_url_fetch_error",
-              adId: ad.id,
+              adId: adId,
               error: error.message,
             })
           }

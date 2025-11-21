@@ -24,20 +24,23 @@ export interface StoredAdTemplate {
 export async function upsertAdTemplates(ads: AdTemplate[], canvaUrls: Map<string, string>) {
   const supabase = await createClient()
 
-  const adsToUpsert = ads.map((ad) => ({
-    id: ad.id,
-    title: ad.title || ad.name || null,
-    description: ad.description || null,
-    image_url: ad.url || ad.visual?.url || ad.image || null,
-    thumbnail_url: ad.thumbnail || ad.preview_url || null,
-    canva_url: canvaUrls.get(ad.id) || null,
-    industry: ad.industry ? [ad.industry] : [],
-    type: ad.type || null,
-    ratio: ad.ratio || null,
-    format: ad.format || null,
-    tags: ad.tags || [],
-    last_synced_at: new Date().toISOString(),
-  }))
+  const adsToUpsert = ads.map((ad) => {
+    const adId = String(ad.id)
+    return {
+      id: adId,
+      title: ad.title || ad.name || null,
+      description: ad.description || null,
+      image_url: ad.url || ad.visual?.url || ad.image || null,
+      thumbnail_url: ad.thumbnail || ad.preview_url || null,
+      canva_url: canvaUrls.get(adId) || null,
+      industry: ad.industry ? [ad.industry] : [],
+      type: ad.type || null,
+      ratio: ad.ratio || null,
+      format: ad.format || null,
+      tags: ad.tags || [],
+      last_synced_at: new Date().toISOString(),
+    }
+  })
 
   const { data, error } = await supabase.from("ad_templates").upsert(adsToUpsert, {
     onConflict: "id",
