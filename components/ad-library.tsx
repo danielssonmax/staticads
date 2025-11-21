@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button"
 import { Loader2, ExternalLink, Copy, RefreshCw } from "lucide-react"
 import { queryAds, getCanvaLinkForAd } from "@/lib/api"
+import { queryAdsFromSupabase, getCanvaLinkFromCache } from "@/lib/api-supabase"
 import type { QueryParams, AdTemplate } from "@/types/api"
 import { useToast } from "@/hooks/use-toast"
 
@@ -41,6 +42,9 @@ export default function AdLibrary() {
   const [isLoadingMore, setIsLoadingMore] = useState(false) // subsequent pages loading
   const [error, setError] = useState<string | null>(null)
   const [hasMore, setHasMore] = useState(true) // assume more pages until we hit an empty response
+  
+  // Use Supabase for faster cached data (set to true after running cron job once)
+  const USE_SUPABASE = process.env.NEXT_PUBLIC_USE_SUPABASE === "true"
 
   // Keep all server-driven params here; page_id is the only pagination source of truth
   const [queryParams, setQueryParams] = useState<QueryParams>({
@@ -76,7 +80,10 @@ export default function AdLibrary() {
       if (isFirstPage && !firstLoadDoneRef.current) setIsLoading(true)
       else setIsLoadingMore(true)
 
-      const response = await queryAds(queryParams)
+      // Use Supabase for cached data (faster) or fallback to direct API
+      const response = USE_SUPABASE 
+        ? await queryAdsFromSupabase(queryParams)
+        : await queryAds(queryParams)
 
       const batch = Array.isArray(response.ads) ? response.ads : []
       // If we got 0 results, there are no more pages
@@ -176,12 +183,15 @@ export default function AdLibrary() {
     const primaryId: string | number =
       ad.id ?? (ad as any).template_id ?? (ad as any).templateId ?? (ad as any)._id ?? (ad as any).id_str ?? "unknown"
     try {
-      const canvaLink = await getCanvaLinkForAd(ad)
+      // Use cached Canva URL from Supabase or fetch from API
+      const canvaLink = USE_SUPABASE 
+        ? await getCanvaLinkFromCache(ad)
+        : await getCanvaLinkForAd(ad)
       window.open(canvaLink, "_blank", "noopener,noreferrer")
     } catch {
       toast({
         title: "Unable to open Canva link",
-        description: "We couldn’t retrieve the Canva link for this template. Please try again later.",
+        description: "We couldn't retrieve the Canva link for this template. Please try again later.",
         variant: "destructive",
       })
     }
